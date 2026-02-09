@@ -24,7 +24,15 @@ public class MainActivity extends AppCompatActivity {
         Button btnAddTask = findViewById(R.id.btnAddTask);
         RecyclerView rvTasks = findViewById(R.id.rvTasks);
 
-        adapter = new TaskAdapter(taskList);
+        adapter = new TaskAdapter(taskList, new TaskAdapter.OnItemClickListener() {
+            @Override
+            public void onDeleteClick(int position) {
+                taskList.remove(position);
+                adapter.notifyItemRemoved(position);
+                adapter.notifyItemRangeChanged(position, taskList.size());
+            }
+        });
+
         rvTasks.setAdapter(adapter);
         rvTasks.setLayoutManager(new LinearLayoutManager(this));
 

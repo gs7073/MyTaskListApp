@@ -4,6 +4,7 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -13,14 +14,22 @@ import java.util.List;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder> {
 
     private List<Task> tasks;
+    private OnItemClickListener listener;
 
-    public TaskAdapter(List<Task> tasks) { this.tasks = tasks; }
+    public interface OnItemClickListener {
+        void onDeleteClick(int position);
+    }
+
+    public TaskAdapter(List<Task> tasks, OnItemClickListener listener) {
+        this.tasks = tasks;
+        this.listener = listener;
+    }
 
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false);
-        return new TaskViewHolder(view);
+        return new TaskViewHolder(view, listener);
     }
 
     @Override
@@ -40,7 +49,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
 
         holder.cbDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
             currentTask.setDone(isChecked);
-
             if (isChecked) {
                 holder.tvTitle.setPaintFlags(holder.tvTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
@@ -55,11 +63,21 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TaskViewHolder
     public static class TaskViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle;
         CheckBox cbDone;
-
-        public TaskViewHolder(@NonNull View itemView) {
+        Button btnDelete;
+        public TaskViewHolder(@NonNull View itemView, OnItemClickListener listener) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTaskTitle);
             cbDone = itemView.findViewById(R.id.cbDone);
+            btnDelete = itemView.findViewById(R.id.btnDelete);
+
+            btnDelete.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onDeleteClick(position);
+                    }
+                }
+            });
         }
     }
 }

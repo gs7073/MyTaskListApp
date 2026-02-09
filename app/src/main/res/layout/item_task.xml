@@ -14,6 +14,14 @@
         android:text="משימה לדוגמה"
         android:textSize="18sp" />
 
+    <Button
+        android:id="@+id/btnDelete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:padding="8dp"
+        />
+
     <CheckBox
         android:id="@+id/cbDone"
         android:layout_width="wrap_content"
